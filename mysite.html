@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101322">
+<title>MySite — Играй!</title>
+<style>
+:root{color-scheme:dark;--bg:#101322;--panel:#191e32;--text:#f5f7ff;--muted:#aab2ce;--accent:#8b5cf6;--accent2:#22d3ee}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(ellipse at top,#22244b 0%,var(--bg) 55%);color:var(--text);min-height:100vh}
+header{padding:22px max(20px,calc((100% - 1100px)/2));display:flex;align-items:center;justify-content:space-between;gap:15px;border-bottom:1px solid #ffffff15;background:#101322bb;position:sticky;top:0;backdrop-filter:blur(12px);z-index:2}
+.logo{font-size:1.45rem;font-weight:900;letter-spacing:.3px}.logo span{color:var(--accent2)}
+nav a{color:var(--muted);text-decoration:none;margin-left:18px}nav a:hover{color:white}
+main{max-width:1100px;margin:auto;padding:34px 20px 60px}
+.hero{padding:48px 28px;border:1px solid #ffffff18;border-radius:28px;background:linear-gradient(125deg,#282253,#182f4a 70%,#173b49);overflow:hidden;position:relative}
+.hero:after{content:"🎮";font-size:clamp(90px,18vw,180px);position:absolute;right:6%;top:50%;transform:translateY(-50%);opacity:.23}
+.hero h1{font-size:clamp(2.2rem,6vw,4rem);line-height:1.05;margin:0 0 15px;max-width:620px;position:relative;z-index:1}
+.hero p{color:#d5daf0;max-width:520px;line-height:1.6;position:relative;z-index:1}
+.button{border:0;background:linear-gradient(100deg,var(--accent),#6366f1);color:white;padding:12px 18px;border-radius:12px;font-weight:750;font-size:1rem;cursor:pointer;display:inline-block;text-decoration:none;position:relative;z-index:1}
+.button:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:32px 0 16px}.section-head h2{margin:0;font-size:1.55rem}
+.search{width:min(100%,270px);padding:11px 13px;border-radius:11px;border:1px solid #ffffff20;background:#151a2b;color:white;font-size:1rem}
+.games{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+.game{background:var(--panel);border:1px solid #ffffff14;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;min-width:0;transition:transform .2s,border-color .2s}
+.game:hover{transform:translateY(-4px);border-color:#8b5cf688}
+.cover{height:145px;display:grid;place-items:center;font-size:4.5rem;background:linear-gradient(135deg,#34275e,#164c65)}
+.cover.puzzle{background:linear-gradient(135deg,#53375e,#9a4c77)}.cover.runner{background:linear-gradient(135deg,#194e48,#6e7d32)}
+.game-content{padding:17px;display:flex;flex-direction:column;align-items:flex-start;flex:1}
+.game h3{margin:0 0 7px}.game p{color:var(--muted);line-height:1.5;margin:0 0 17px;flex:1}
+.game .button{margin-top:auto}.tag{font-size:.78rem;color:#c4b5fd;background:#8b5cf622;padding:5px 9px;border-radius:99px;margin-bottom:10px}
+footer{text-align:center;color:var(--muted);padding:25px;border-top:1px solid #ffffff12;font-size:.9rem}
+.modal{position:fixed;inset:0;background:#070914eF;z-index:5;display:none;align-items:center;justify-content:center;padding:15px}
+.modal.open{display:flex}.dialog{width:min(650px,100%);max-height:92vh;overflow:auto;background:#191e32;border:1px solid #ffffff25;border-radius:22px;padding:20px}
+.dialog-top{display:flex;justify-content:space-between;align-items:center;gap:12px}.dialog h2{margin:0}.close{font-size:1.4rem;background:#ffffff12;border:0;color:white;border-radius:10px;padding:5px 12px;cursor:pointer}
+canvas{width:100%;max-width:560px;display:block;margin:15px auto;border-radius:12px;background:#0d1325;touch-action:manipulation}
+.game-controls{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}.hint{text-align:center;color:var(--muted);font-size:.92rem}
+#score{font-weight:800;color:var(--accent2)}
+@media(max-width:760px){.games{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{padding:34px 22px}.hero:after{right:-12px;opacity:.14}nav a{margin-left:9px}}
+@media(max-width:500px){header{padding:16px 14px}.logo{font-size:1.2rem}nav a{font-size:.88rem;margin-left:8px}main{padding:22px 13px 40px}.games{grid-template-columns:1fr}.cover{height:125px}.section-head{align-items:flex-start;flex-direction:column}.search{width:100%}.hero{padding:30px 19px}.hero p{max-width:95%}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">My<span>Site</span> 🎮</div>
+  <nav><a href="#games">Игры</a><a href="#about">О сайте</a></nav>
+</header>
+<main>
+  <section class="hero">
+    <h1>Твоя игровая<br>территория</h1>
+    <p>Запускай мини-игры прямо в браузере. Никаких установок — просто выбери игру и начинай!</p>
+    <a class="button" href="#games">Играть сейчас ↓</a>
+  </section>
+  <section id="games">
+    <div class="section-head"><h2>🎯 Выбери игру</h2><input id="search" class="search" type="search" placeholder="Найти игру..." aria-label="Найти игру"></div>
+    <div class="games" id="gameList">
+      <article class="game" data-name="кликер тап кликай">
+        <div class="cover">👆</div><div class="game-content"><span class="tag">На реакцию</span><h3>Супер-кликер</h3><p>Нажимай на кнопку и набери как можно больше очков за 15 секунд.</p><button class="button" onclick="openGame('clicker')">Играть</button></div>
+      </article>
+      <article class="game" data-name="угадай число логика">
+        <div class="cover puzzle">🔢</div><div class="game-content"><span class="tag">Головоломка</span><h3>Угадай число</h3><p>Компьютер загадал число от 1 до 100. Сможешь найти его?</p><button class="button" onclick="openGame('number')">Играть</button></div>
+      </article>
+      <article class="game" data-name="лови звезды реакция">
+        <div class="cover runner">⭐</div><div class="game-content"><span class="tag">Аркада</span><h3>Лови звёзды</h3><p>Лови падающие звёзды нажатием. Проверь свою реакцию!</p><button class="button" onclick="openGame('stars')">Играть</button></div>
+      </article>
+    </div>
+    <p id="empty" class="hint" hidden>Игры не найдены. Попробуй другое название.</p>
+  </section>
+  <section id="about" style="margin-top:35px"><h2>✨ О MySite</h2><p style="color:var(--muted);line-height:1.7">MySite — небольшой игровой сайт, который работает на компьютерах, планшетах и телефонах. Это первая версия: дальше можно добавлять новые игры и улучшать дизайн.</p></section>
+</main>
+<footer>© <span id="year"></span> MySite · Сделано для хорошего настроения 💜</footer>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="gameTitle">
+ <div class="dialog"><div class="dialog-top"><h2 id="gameTitle">Игра</h2><button class="close" onclick="closeGame()" aria-label="Закрыть">✕</button></div><div id="gameArea"></div></div>
+</div>
+<script>
+document.getElementById('year').textContent=new Date().getFullYear();
+const modal=document.getElementById('modal'), area=document.getElementById('gameArea'), title=document.getElementById('gameTitle');
+let timer=null, raf=null;
+function stop(){if(timer)clearInterval(timer);if(raf)cancelAnimationFrame(raf);timer=null;raf=null}
+function closeGame(){stop();modal.classList.remove('open');area.innerHTML=''}
+function openGame(type){
+ stop();modal.classList.add('open');
+ if(type==='clicker')clicker();
+ if(type==='number')numberGame();
+ if(type==='stars')starsGame();
+}
+modal.addEventListener('click',e=>{if(e.target===modal)closeGame()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeGame()});
+function clicker(){
+ title.textContent='👆 Супер-кликер';let score=0,left=15,started=false;
+ area.innerHTML='<p class="hint">Очки: <span id="score">0</span> · Время: <span id="left">15</span> сек.</p><button id="tap" class="button" style="display:block;width:100%;padding:30px;font-size:1.35rem">Нажми, чтобы начать!</button><p id="result" class="hint">Набери максимум очков за 15 секунд.</p>';
+ const tap=document.getElementById('tap');
+ tap.onclick=()=>{if(!started){started=true;tap.textContent='ЖМИ! 👆';timer=setInterval(()=>{left--;document.getElementById('left').textContent=left;if(left<=0){stop();tap.disabled=true;tap.textContent='Время вышло!';document.getElementById('result').textContent='Твой результат: '+score+' очков. Нажми «Играть» на карточке, чтобы повторить.'}},1000)}if(left>0){score++;document.getElementById('score').textContent=score}};
+}
+function numberGame(){
+ title.textContent='🔢 Угадай число';const secret=Math.floor(Math.random()*100)+1;let tries=0;
+ area.innerHTML='<p>Я загадал число от 1 до 100. Попробуй угадать!</p><form id="guessForm" style="display:flex;gap:8px"><input id="guess" class="search" style="min-width:0;flex:1" type="number" min="1" max="100" placeholder="Твоё число" required><button class="button">Проверить</button></form><p id="feedback" class="hint" aria-live="polite">Удачи!</p><p id="tries" class="hint">Попыток: 0</p><button class="button" id="again">Новое число</button>';
+ const form=document.getElementById('guessForm'),inp=document.getElementById('guess'),feedback=document.getElementById('feedback'),triesEl=document.getElementById('tries');
+ form.onsubmit=e=>{e.preventDefault();const n=Number(inp.value);if(n<1||n>100)return;tries++;feedback.textContent=n===secret?'🎉 Угадал! Отличная работа!':n<secret?'Больше! Попробуй ещё.':'Меньше! Попробуй ещё.';triesEl.textContent='Попыток: '+tries;if(n===secret){inp.disabled=true;form.querySelector('button').disabled=true}};
+ document.getElementById('again').onclick=numberGame;
+}
+function starsGame(){
+ title.textContent='⭐ Лови звёзды';area.innerHTML='<p class="hint">Очки: <span id="score">0</span> · Нажимай на звёзды, пока они не улетели!</p><canvas id="board" width="560" height="360" aria-label="Игровое поле с падающими звёздами"></canvas><div class="game-controls"><button class="button" id="startStars">Начать заново</button></div><p class="hint">На телефоне просто касайся звёзд.</p>';
+ const c=document.getElementById('board'),ctx=c.getContext('2d');let stars=[],score=0,running=true;
+ function spawn(){stars.push({x:20+Math.random()*520,y:-20,r:13+Math.random()*7,s:1.2+Math.random()*2})}
+ for(let i=0;i<5;i++)spawn();
+ function draw(){if(!running)return;ctx.clearRect(0,0,c.width,c.height);ctx.fillStyle='#0d1325';ctx.fillRect(0,0,c.width,c.height);ctx.font='27px system-ui';stars.forEach(s=>{ctx.fillText('⭐',s.x-s.r,s.y);s.y+=s.s});stars=stars.filter(s=>s.y<390);if(Math.random()<.035)spawn();raf=requestAnimationFrame(draw)}
+ function hit(e){const r=c.getBoundingClientRect(),x=(e.clientX-r.left)*c.width/r.width,y=(e.clientY-r.top)*c.height/r.height;for(let i=stars.length-1;i>=0;i--){let s=stars[i];if(Math.abs(x-s.x)<28&&Math.abs(y-s.y)<30){stars.splice(i,1);score++;document.getElementById('score').textContent=score;return}}}
+ c.addEventListener('pointerdown',hit);draw();document.getElementById('startStars').onclick=()=>{stop();running=false;starsGame()};
+}
+document.getElementById('search').addEventListener('input',e=>{const q=e.target.value.toLowerCase().trim();let shown=0;document.querySelectorAll('.game').forEach(card=>{const match=(card.dataset.name+' '+card.innerText).toLowerCase().includes(q);card.style.display=match?'':'none';if(match)shown++});document.getElementById('empty').hidden=shown!==0});
+</script>
+</body>
+</html>
